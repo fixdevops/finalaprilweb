@@ -6,7 +6,7 @@ export default function PembelajaranDetail2() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>Teknik Cognitive Reframing - DiaWeb</title>
+        <title>Motivasi Belajar - DiaWeb</title>
       </Head>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -22,18 +22,18 @@ export default function PembelajaranDetail2() {
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
           <div className="relative h-64 md:h-80">
             <Image 
-              src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=1200"
-              alt="Mindset"
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1200"
+              alt="Motivation"
               fill
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-              <span className="inline-block px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full mb-3">
-                Tahap 2
+              <span className="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full mb-3">
+                Aspek 2
               </span>
               <h1 className="text-4xl md:text-5xl font-extrabold mb-2">
-                Cognitive Reframing
+                Motivasi Belajar
               </h1>
             </div>
           </div>
@@ -43,33 +43,48 @@ export default function PembelajaranDetail2() {
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           <div className="prose prose-lg max-w-none">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Ubah Pola Pikir Anda
+              🔥 Menggerakkan Diri untuk Belajar
             </h2>
-            <p className="text-xl text-gray-700 mb-10 leading-relaxed">
-              Belajar mengubah pola pikir otomatis. Ubah kalimat 'Aku harus main sekarang' menjadi kesadaran akan tanggung jawab masa depan. Teknik ini disebut reframing, di mana kita membingkai ulang keinginan impulsif menjadi keputusan logis.
-            </p>
+            
+            <div className="mb-10">
+              <h3 className="text-xl font-bold text-orange-600 mb-2">Pengertian</h3>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                Motivasi adalah dorongan dalam diri siswa yang membuatnya mau belajar dan bertahan meskipun mengalami kesulitan.
+              </p>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-6 mb-12">
-              <div className="p-6 rounded-2xl bg-red-50 border-2 border-red-200">
-                <h4 className="text-red-600 font-bold mb-3 uppercase text-xs tracking-wider">❌ Pola Pikir Lama</h4>
-                <p className="text-gray-800 font-semibold italic">"Main 5 menit lagi pasti nggak apa-apa."</p>
+              <div className="p-6 rounded-2xl bg-blue-50 border-2 border-blue-100">
+                <h4 className="text-blue-600 font-bold mb-3 uppercase text-xs tracking-wider">💡 Motivasi Intrinsik</h4>
+                <ul className="text-gray-800 space-y-2 text-sm">
+                  <li>• Belajar karena ingin tahu</li>
+                  <li>• Belajar karena merasa tertantang</li>
+                </ul>
               </div>
-              <div className="p-6 rounded-2xl bg-green-50 border-2 border-green-200">
-                <h4 className="text-green-600 font-bold mb-3 uppercase text-xs tracking-wider">✓ Reframed Mindset</h4>
-                <p className="text-gray-900 font-semibold">"Tugas ini jauh lebih penting untuk masa depanku daripada 5 menit kesenangan semu."</p>
+              <div className="p-6 rounded-2xl bg-purple-50 border-2 border-purple-100">
+                <h4 className="text-purple-600 font-bold mb-3 uppercase text-xs tracking-wider">🏆 Motivasi Ekstrinsik</h4>
+                <ul className="text-gray-800 space-y-2 text-sm">
+                  <li>• Nilai atau Ranking</li>
+                  <li>• Pujian & Harapan Orang Tua</li>
+                </ul>
               </div>
             </div>
 
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Langkah Praktis:</h3>
+            <div className="bg-orange-50 border-l-4 border-orange-400 p-6 mb-10">
+              <p className="text-gray-700 italic">
+                "Keduanya penting, tapi motivasi intrinsik membuat belajar lebih tahan lama."
+              </p>
+            </div>
+
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Komponen Motivasi dalam SRL:</h3>
             <div className="space-y-4 mb-10">
               {[
-                { step: "Sadar", desc: "Kenali saat pikiran impulsif untuk main game muncul." },
-                { step: "Berhenti", desc: "Tarik napas dalam dan jangan langsung bertindak." },
-                { step: "Tanya", desc: "Tanyakan pada diri sendiri: 'Apa manfaatnya buat aku 2 jam lagi?'" },
-                { step: "Pilih", desc: "Putuskan untuk melakukan tugas produktif terlebih dahulu." }
+                { step: "Tujuan", desc: "Memiliki tujuan belajar yang jelas." },
+                { step: "Efikasi Diri", desc: "Kepercayaan diri (self-efficacy) bahwa kamu bisa melakukannya." },
+                { step: "Resiliensi", desc: "Ketahanan dalam menghadapi kesulitan belajar." }
               ].map((s, i) => (
-                <div key={i} className="flex gap-4 items-start p-6 bg-gray-50 rounded-xl border border-gray-200">
-                  <span className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0">
+                <div key={i} className="flex gap-4 items-start p-5 bg-gray-50 rounded-xl border border-gray-200">
+                  <span className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold flex-shrink-0">
                     {i+1}
                   </span>
                   <div>
@@ -80,10 +95,29 @@ export default function PembelajaranDetail2() {
               ))}
             </div>
 
-            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-8 text-center text-white mt-12">
-              <p className="text-lg font-bold mb-6">Siap menuju tahap akhir pengendalian diri?</p>
+            <div className="mb-10 p-6 bg-gray-900 rounded-2xl text-white">
+               <h4 className="text-orange-400 font-bold mb-2">Contoh Sikap Siswa Bermotivasi Tinggi:</h4>
+               <p className="text-lg italic">“Walaupun nilainya jelek kemarin, saya tetap mau belajar supaya bisa lebih baik.”</p>
+            </div>
+
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Tips Meningkatkan Motivasi:</h3>
+            <div className="grid md:grid-cols-1 gap-3 mb-10">
+              {[
+                "Tentukan tujuan kecil yang realistis setiap hari.",
+                "Ingat alasan pribadi mengapa belajar itu penting bagi masa depanmu.",
+                "Beri penghargaan (reward) pada diri sendiri setelah selesai belajar."
+              ].map((tip, i) => (
+                <div key={i} className="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                  <span className="text-orange-500 font-bold text-xl">★</span>
+                  <p className="text-gray-700 font-medium">{tip}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl p-8 text-center text-white mt-12">
+              <p className="text-lg font-bold mb-6">Sudah punya dorongan untuk belajar? Mari lanjut ke aspek terakhir!</p>
               <Link href="/PembelajaranDetail3">
-                <button className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all shadow-lg">
+                <button className="bg-white text-orange-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all shadow-lg">
                   Lanjut ke Tahap 3 →
                 </button>
               </Link>

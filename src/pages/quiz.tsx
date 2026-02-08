@@ -1,277 +1,386 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const questions = [
+// Definisi Tipe Soal
+type Question = {
+  id: number;
+  question: string;
+  options: {
+    label: string;
+    text: string;
+    type: 'visual' | 'auditory' | 'kinesthetic';
+  }[];
+};
+
+const questions: Question[] = [
+  // 1-6: A=V, B=A, C=K
   {
     id: 1,
-    question: "Saat memiliki tugas sekolah dan ingin bermain game, saya biasanya …",
+    question: "Saya lebih mudah mengingat sesuatu jika…",
     options: [
-      "Bermain game terlebih dahulu sebagai pemanasan.",
-      "Mengerjakan tugas sampai selesai baru bermain sebagai reward.",
-      "Mengerjakan setengah tugas, lalu bermain sebentar.",
-      "Mengabaikan tugas dan fokus mengejar rank."
-    ],
-    answer: 1
+      { label: "A", text: "Ada gambar atau diagram", type: "visual" },
+      { label: "B", text: "Dijelaskan dengan suara", type: "auditory" },
+      { label: "C", text: "Dicoba langsung", type: "kinesthetic" }
+    ]
   },
   {
     id: 2,
-    question: "Apa yang paling menggambarkan perasaanmu saat tidak bisa bermain game seharian?",
+    question: "Saat belajar, saya suka…",
     options: [
-      "Merasa sangat gelisah, marah, dan tidak bisa fokus pada hal lain.",
-      "Merasa bosan sebentar tapi bisa mencari aktivitas lain.",
-      "Biasa saja dan menikmati waktu istirahat atau hobi lain.",
-      "Merasa dunia kiamat dan terus memikirkan game."
-    ],
-    answer: 2
+      { label: "A", text: "Membaca catatan atau buku", type: "visual" },
+      { label: "B", text: "Mendengar penjelasan orang", type: "auditory" },
+      { label: "C", text: "Praktek langsung", type: "kinesthetic" }
+    ]
   },
   {
     id: 3,
-    question: "Pernahkah kamu berbohong kepada orang tua atau teman terkait durasi bermain gamemu?",
+    question: "Saya cepat paham jika…",
     options: [
-      "Tidak pernah, saya jujur dengan waktu yang saya gunakan.",
-      "Pernah, beberapa kali agar tidak dimarahi.",
-      "Sering, agar bisa terus bermain tanpa gangguan.",
-      "Selalu, karena mereka tidak akan mengerti."
-    ],
-    answer: 0
+      { label: "A", text: "Ada ilustrasi atau contoh visual", type: "visual" },
+      { label: "B", text: "Dijelaskan panjang lebar", type: "auditory" },
+      { label: "C", text: "Dicoba sendiri", type: "kinesthetic" }
+    ]
   },
   {
     id: 4,
-    question: "Manakah prinsip 'Self-Control' yang paling efektif menurutmu?",
+    question: "Cara belajar yang paling nyaman bagi saya…",
     options: [
-      "Bermain sampai puas baru belajar.",
-      "Menaruh gadget di ruangan lain saat sedang belajar.",
-      "Main game sambil zoom meeting sekolah.",
-      "Menunggu sampai ngantuk berat baru tidur."
-    ],
-    answer: 1
+      { label: "A", text: "Mengikuti petunjuk gambar atau diagram", type: "visual" },
+      { label: "B", text: "Mendengar instruksi lisan", type: "auditory" },
+      { label: "C", text: "Melakukan langsung", type: "kinesthetic" }
+    ]
   },
   {
     id: 5,
-    question: "Apa tindakanmu saat orang tua mengingatkan untuk berhenti karena sudah larut malam?",
+    question: "Saya suka kegiatan belajar yang…",
     options: [
-      "Marah-marah dan tetap melanjutkan game.",
-      "Berhenti segera dan bersiap untuk istirahat.",
-      "Bilang '5 menit lagi' berkali-kali sampai berjam-jam.",
-      "Sembunyi di balik selimut untuk tetap main."
-    ],
-    answer: 1
+      { label: "A", text: "melihat contoh", type: "visual" },
+      { label: "B", text: "Diskusi/cerita", type: "auditory" },
+      { label: "C", text: "Mempraktekkan sendiri", type: "kinesthetic" }
+    ]
+  },
+  {
+    id: 6,
+    question: "Saya lebih fokus ketika belajar…",
+    options: [
+      { label: "A", text: "Ada hal-hal visual yang bisa dilihat", type: "visual" },
+      { label: "B", text: "Mendengar orang menjelaskan", type: "auditory" },
+      { label: "C", text: "Bisa langsung melakukan", type: "kinesthetic" }
+    ]
+  },
+  // 7-12: A=A, B=V, C=K (Note question 7 order: A=Suara, B=Gambar, C=Dicoba)
+  {
+    id: 7,
+    question: "Saya mudah mengingat sesuatu jika…",
+    options: [
+      { label: "A", text: "Ada yang menjelaskan dengan suara", type: "auditory" },
+      { label: "B", text: "Ada gambar/diagram", type: "visual" },
+      { label: "C", text: "Dicoba sendiri", type: "kinesthetic" }
+    ]
+  },
+  {
+    id: 8,
+    question: "Cara belajar saya yang paling nyaman…",
+    options: [
+      { label: "A", text: "Mendengar penjelasan panjang lebar", type: "auditory" },
+      { label: "B", text: "Membaca catatan sendiri", type: "visual" },
+      { label: "C", text: "Praktek langsung", type: "kinesthetic" }
+    ]
+  },
+  {
+    id: 9,
+    question: "Saya suka belajar…",
+    options: [
+      { label: "A", text: "Mendengarkan cerita atau diskusi", type: "auditory" },
+      { label: "B", text: "Melihat ilustrasi atau contoh", type: "visual" },
+      { label: "C", text: "Melakukan langsung", type: "kinesthetic" }
+    ]
+  },
+  {
+    id: 10,
+    question: "Saat menjawab pertanyaan, saya biasanya…",
+    options: [
+      { label: "A", text: "Menjawab panjang lebar dengan kata-kata", type: "auditory" },
+      { label: "B", text: "Menunjukkan dengan gambar/diagram", type: "visual" },
+      { label: "C", text: "Menunjukkan dengan gerakan/praktek", type: "kinesthetic" }
+    ]
+  },
+  {
+    id: 11,
+    question: "Cara saya berkomunikasi belajar paling mudah…",
+    options: [
+      { label: "A", text: "Lewat telepon atau mendengar penjelasan", type: "auditory" },
+      { label: "B", text: "Melihat ekspresi/gesture", type: "visual" },
+      { label: "C", text: "Melakukan/praktek", type: "kinesthetic" }
+    ]
+  },
+  {
+    id: 12,
+    question: "Saya lebih fokus jika…",
+    options: [
+      { label: "A", text: "Ada suara atau orang menjelaskan", type: "auditory" },
+      { label: "B", text: "Ada gambar yang bisa dilihat", type: "visual" },
+      { label: "C", text: "Bisa langsung mempraktekkan", type: "kinesthetic" }
+    ]
+  },
+  // 13-18: A=K, B=V, C=A
+  {
+    id: 13,
+    question: "Cara belajar yang paling saya sukai…",
+    options: [
+      { label: "A", text: "Melakukan/praktek langsung", type: "kinesthetic" },
+      { label: "B", text: "Membaca atau melihat contoh", type: "visual" },
+      { label: "C", text: "Mendengar orang menjelaskan", type: "auditory" }
+    ]
+  },
+  {
+    id: 14,
+    question: "Saya mudah mengingat informasi jika…",
+    options: [
+      { label: "A", text: "Menulis berkali-kali", type: "kinesthetic" },
+      { label: "B", text: "Melihat ilustrasi/gambar", type: "visual" },
+      { label: "C", text: "Mendengar penjelasan", type: "auditory" }
+    ]
+  },
+  {
+    id: 15,
+    question: "Saat belajar, saya tidak suka…",
+    options: [
+      { label: "A", text: "Duduk diam terlalu lama", type: "kinesthetic" }, 
+      { label: "B", text: "Mendengar penjelasan panjang", type: "visual" }, 
+      { label: "C", text: "Hanya melihat diagram/gambar", type: "auditory" }
+    ]
+  },
+  {
+    id: 16,
+    question: "Saya paling cepat mengerti jika…",
+    options: [
+      { label: "A", text: "Bisa mempraktikkan langsung", type: "kinesthetic" },
+      { label: "B", text: "Ada contoh visual", type: "visual" },
+      { label: "C", text: "Mendengar orang menjelaskan", type: "auditory" }
+    ]
+  },
+  {
+    id: 17,
+    question: "Saat menjawab pertanyaan, saya biasanya…",
+    options: [
+      { label: "A", text: "Menggunakan gerakan tubuh atau praktik", type: "kinesthetic" },
+      { label: "B", text: "Menulis atau menunjuk diagram", type: "visual" },
+      { label: "C", text: "Menjawab dengan kata-kata panjang", type: "auditory" }
+    ]
+  },
+  {
+    id: 18,
+    question: "Saya paling senang belajar dengan…",
+    options: [
+      { label: "A", text: "Aktivitas praktik atau simulasi", type: "kinesthetic" },
+      { label: "B", text: "Melihat contoh/ilustrasi", type: "visual" },
+      { label: "C", text: "Mendengar penjelasan", type: "auditory" }
+    ]
   }
 ];
 
-export default function Quiz() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
+export default function QuizApp() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [scores, setScores] = useState<{ visual: number, auditory: number, kinesthetic: number }>({ 
+    visual: 0, 
+    auditory: 0, 
+    kinesthetic: 0 
+  });
   const [showResult, setShowResult] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const handleAnswer = (type: 'visual' | 'auditory' | 'kinesthetic') => {
+    const newScores = { ...scores, [type]: scores[type] + 1 };
+    setScores(newScores);
 
-  const handleAnswerClick = (index: number) => {
-    setSelectedAnswer(index);
-    if (index === questions[currentQuestion].answer) {
-      setScore(score + 1);
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setShowResult(true);
     }
-
-    setTimeout(() => {
-      const nextQuestion = currentQuestion + 1;
-      if (nextQuestion < questions.length) {
-        setCurrentQuestion(nextQuestion);
-        setSelectedAnswer(null);
-      } else {
-        setShowResult(true);
-      }
-    }, 800);
   };
 
-  const getPerformanceMessage = () => {
-    const finalScore = (score / questions.length) * 100;
-    if (finalScore === 100) return { 
-      title: "SEMPURNA!", 
-      msg: "Kamu memiliki kendali diri yang luar biasa! 🏆", 
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200"
-    };
-    if (finalScore >= 75) return { 
-      title: "SANGAT BAIK!", 
-      msg: "Kamu sangat sadar akan batasan dirimu. Pertahankan! 🔥", 
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200"
-    };
-    if (finalScore >= 50) return { 
-      title: "CUKUP BAIK!", 
-      msg: "Kamu sudah di jalur yang benar, tetaplah konsisten. ⚖️", 
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-50",
-      borderColor: "border-yellow-200"
-    };
-    return { 
-      title: "PERLU PERBAIKAN", 
-      msg: "Hati-hati, kontrol dirimu mulai melemah. Yuk belajar lagi! ⚠️", 
-      color: "text-red-600",
-      bgColor: "bg-red-50",
-      borderColor: "border-red-200"
-    };
+  const resetQuiz = () => {
+    setScores({ visual: 0, auditory: 0, kinesthetic: 0 });
+    setCurrentIndex(0);
+    setShowResult(false);
   };
 
-  if (!mounted) return null;
+  const getDominantStyle = () => {
+    // Sort descending by score
+    const sorted = Object.entries(scores).sort(([,a], [,b]) => b - a);
+    return sorted[0]; // [style, score]
+  };
 
-  const performance = getPerformanceMessage();
-  const percentage = Math.round((score / questions.length) * 100);
+  const totalQuestions = questions.length;
+  const progress = ((currentIndex + 1) / totalQuestions) * 100;
+  const [dominantStyle, dominantScore] = getDominantStyle();
+
+  const colors = {
+    visual: 'bg-blue-500',
+    auditory: 'bg-emerald-500',
+    kinesthetic: 'bg-orange-500'
+  };
+  
+  const textColors = {
+    visual: 'text-blue-600',
+    auditory: 'text-emerald-600',
+    kinesthetic: 'text-orange-600'
+  };
+
+  const borderColors = {
+    visual: 'border-blue-200',
+    auditory: 'border-emerald-200',
+    kinesthetic: 'border-orange-200'
+  };
+  
+  const bgColors = {
+     visual: 'bg-blue-50',
+     auditory: 'bg-emerald-50',
+     kinesthetic: 'bg-orange-50'
+  };
+
+  const descriptions: Record<string, string> = {
+    visual: "Kamu adalah tipe Visual! Kamu memproses informasi paling baik melalui penglihatan. Gambar, diagram, grafik, dan membaca buku adalah cara terbaikmu untuk belajar. Kamu mungkin lebih suka melihat instruksi tertulis daripada mendengarnya.",
+    auditory: "Kamu adalah tipe Auditory! Kamu belajar paling efektif dengan mendengar. Diskusi kelompok, mendengarkan ceramah, atau membaca dengan suara keras sangat membantumu. Kamu peka terhadap nada suara dan ritme bicara.",
+    kinesthetic: "Kamu adalah tipe Kinestetik! Kamu belajar melalui pengalaman dan aktivitas fisik. Kamu perlu bergerak, menyentuh, atau mempraktikkan langsung apa yang sedang dipelajari. Duduk diam terlalu lama mungkin sulit bagimu."
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans pattern-grid-lg">
       <Head>
-        <title>Kuis BK: Self-Control - DiaWeb</title>
+        <title>Kuis Gaya Belajar</title>
       </Head>
 
-      <div className="max-w-3xl mx-auto">
+      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col relative z-10">
         {!showResult ? (
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-8 md:p-12">
             {/* Progress Bar */}
-            <div className="h-2 bg-gray-100">
-              <div 
-                className="h-full bg-blue-600 transition-all duration-500"
-                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-              />
+            <div className="mb-10">
+              <div className="flex justify-between items-end mb-3">
+                <span className="text-gray-500 font-medium tracking-wide text-sm">PERTANYAAN {currentIndex + 1}/{totalQuestions}</span>
+                <span className="text-indigo-600 font-bold text-sm">{Math.round(progress)}% SELESAI</span>
+              </div>
+              <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden">
+                <motion.div 
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-lg"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+              </div>
             </div>
 
-            <div className="p-8 md:p-12">
-              {/* Question Counter */}
-              <div className="flex justify-between items-center mb-8">
-                <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">
-                    {currentQuestion + 1}
-                  </span>
-                  <span className="text-gray-500 font-medium text-sm">
-                    dari {questions.length} pertanyaan
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
-                  {Math.round(((currentQuestion) / questions.length) * 100)}% Selesai
-                </span>
-              </div>
-
-              {/* Question */}
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 leading-tight">
-                {questions[currentQuestion].question}
+            {/* Question Card */}
+            <AnimatePresence mode='wait'>
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="min-h-[300px] flex flex-col justify-center"
+            >
+              <h2 className="text-3xl md:text-3xl font-bold text-gray-800 mb-8 leading-tight">
+                {questions[currentIndex].question}
               </h2>
 
-              {/* Options */}
-              <div className="space-y-3">
-                {questions[currentQuestion].options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswerClick(index)}
-                    disabled={selectedAnswer !== null}
-                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 group
-                      ${selectedAnswer === index 
-                        ? index === questions[currentQuestion].answer
-                          ? 'border-green-500 bg-green-50 text-green-900'
-                          : 'border-red-500 bg-red-50 text-red-900'
-                        : 'border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50'}
-                      ${selectedAnswer !== null && index === questions[currentQuestion].answer
-                        ? 'border-green-500 bg-green-50'
-                        : ''}
-                    `}
+              <div className="space-y-4">
+                {questions[currentIndex].options.map((option, idx) => (
+                  <motion.button
+                    key={idx}
+                    whileHover={{ scale: 1.02, backgroundColor: "#F8FAFC" }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleAnswer(option.type)}
+                    className="w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-indigo-500 hover:shadow-md transition-all duration-200 group flex items-center gap-5 bg-white"
                   >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors
-                      ${selectedAnswer === index 
-                        ? index === questions[currentQuestion].answer
-                          ? 'bg-green-500 text-white'
-                          : 'bg-red-500 text-white'
-                        : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'}
-                      ${selectedAnswer !== null && index === questions[currentQuestion].answer
-                        ? 'bg-green-500 text-white'
-                        : ''}
-                    `}>
-                      {String.fromCharCode(65 + index)}
-                    </div>
-                    <span className="font-medium flex-1">{option}</span>
-                    {selectedAnswer !== null && index === questions[currentQuestion].answer && (
-                      <span className="text-green-500 font-bold">✓</span>
-                    )}
-                    {selectedAnswer === index && index !== questions[currentQuestion].answer && (
-                      <span className="text-red-500 font-bold">✗</span>
-                    )}
-                  </button>
+                    <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 font-bold text-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors shadow-sm">
+                      {option.label}
+                    </span>
+                    <span className="text-gray-700 font-medium text-lg group-hover:text-gray-900">
+                      {option.text}
+                    </span>
+                  </motion.button>
                 ))}
               </div>
-            </div>
+            </motion.div>
+            </AnimatePresence>
           </div>
         ) : (
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 text-center">
-            <div className={`inline-block px-4 py-2 rounded-full ${performance.bgColor} ${performance.borderColor} border-2 mb-6`}>
-              <span className={`font-bold text-sm ${performance.color}`}>HASIL KUIS</span>
-            </div>
-
-            <h2 className={`text-4xl md:text-5xl font-black mb-4 ${performance.color}`}>
-              {performance.title}
-            </h2>
-            <p className="text-xl text-gray-600 mb-10">{performance.msg}</p>
-            
-            {/* Score Circle */}
-            <div className="relative inline-block mb-10">
-              <svg className="w-48 h-48 transform -rotate-90">
-                <circle 
-                  cx="96" cy="96" r="88" 
-                  stroke="currentColor" 
-                  strokeWidth="12" 
-                  fill="transparent" 
-                  className="text-gray-100" 
-                />
-                <circle 
-                  cx="96" cy="96" r="88" 
-                  stroke="currentColor" 
-                  strokeWidth="12" 
-                  fill="transparent" 
-                  strokeDasharray={552.92}
-                  strokeDashoffset={552.92 - (552.92 * percentage) / 100}
-                  className={percentage >= 75 ? 'text-green-500' : percentage >= 50 ? 'text-blue-500' : 'text-red-500'}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-5xl font-black text-gray-900">{percentage}%</span>
-                <span className="text-gray-500 font-bold text-xs uppercase">Skor Anda</span>
+          <div className="p-8 md:p-12 text-center bg-white">
+             <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, type: "spring" }}
+            >
+              <div className="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full font-bold text-sm mb-6 uppercase tracking-wider">
+                Hasil Analisis
               </div>
-            </div>
-
-            {/* Score Details */}
-            <div className="grid grid-cols-2 gap-4 mb-10 max-w-sm mx-auto">
-              <div className="bg-green-50 border-2 border-green-200 p-4 rounded-2xl">
-                <p className="text-green-600 font-black text-3xl">{score}</p>
-                <p className="text-green-600 text-xs font-bold uppercase">Benar</p>
+              
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-2">Gaya Belajarmu Dominan</h2>
+              
+              <div className={`mt-8 mb-8 p-8 ${bgColors[dominantStyle as keyof typeof bgColors]} rounded-3xl border-2 ${borderColors[dominantStyle as keyof typeof borderColors]} shadow-inner`}>
+                <h3 className={`text-5xl font-black mb-4 capitalize tracking-tight ${textColors[dominantStyle as keyof typeof textColors]}`}>
+                  {dominantStyle}
+                </h3>
+                <p className="text-gray-700 text-lg leading-relaxed max-w-2xl mx-auto">
+                  {descriptions[dominantStyle]}
+                </p>
               </div>
-              <div className="bg-red-50 border-2 border-red-200 p-4 rounded-2xl">
-                <p className="text-red-600 font-black text-3xl">{questions.length - score}</p>
-                <p className="text-red-600 text-xs font-bold uppercase">Salah</p>
-              </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button 
-                onClick={() => { 
-                  setSelectedAnswer(null); 
-                  setShowResult(false); 
-                  setCurrentQuestion(0); 
-                  setScore(0); 
-                }}
-                className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg"
-              >
-                Ulangi Kuis
-              </button>
-              <Link href="/" className="flex-1 py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all text-center">
-                Kembali ke Beranda
-              </Link>
-            </div>
+              {/* Chart */}
+              <div className="max-w-xl mx-auto space-y-6 mb-12">
+                <h4 className="text-left font-bold text-gray-900 text-lg mb-4">Detail Skor</h4>
+                {['visual', 'auditory', 'kinesthetic'].map((type, i) => {
+                  const score = scores[type as keyof typeof scores];
+                  // Calculate absolute percentage of total questions (18) max
+                  // Or relative to the sum of scores (which is also 18)
+                  const barWidth = (score / 18) * 100;
+                  
+                  return (
+                    <motion.div 
+                      key={type} 
+                      className="bg-slate-50 rounded-2xl p-5 border border-slate-100"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 + 0.3 }}
+                    >
+                      <div className="flex justify-between mb-3 items-center">
+                        <span className="font-bold text-gray-700 capitalize flex items-center gap-3 text-lg">
+                           <span className={`w-4 h-4 rounded-full shadow-sm ${colors[type as keyof typeof colors]}`}></span>
+                           {type}
+                        </span>
+                        <span className="font-bold text-gray-900 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-100">{score} Poin</span>
+                      </div>
+                      <div className="h-4 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                        <motion.div 
+                          className={`h-full ${colors[type as keyof typeof colors]}`}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${barWidth}%` }}
+                          transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+                        />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-4 justify-center">
+                <button 
+                  onClick={resetQuiz}
+                  className="px-8 py-4 bg-white text-gray-700 font-bold rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all"
+                >
+                  Ulangi Kuis
+                </button>
+                <a 
+                  href="/pembelajaran"
+                  className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:bg-indigo-700 hover:shadow-2xl hover:-translate-y-1 transition-all"
+                >
+                  Kembali ke Materi
+                </a>
+              </div>
+            </motion.div>
           </div>
         )}
       </div>

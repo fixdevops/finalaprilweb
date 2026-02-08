@@ -26,15 +26,8 @@ export default function Home() {
       </section>
 
       {/* 3 Cards Section */}
-      <section className="py-16 px-4 max-w-7xl mx-auto">
+      <section className="py-16 px-4 max-w-7xl mx-auto justify-center">
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-            <div className="text-4xl mb-4">⏱️</div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Metode 5 Menit</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Saat ingin main game, tunda selama 5 menit. Gunakan waktu ini untuk bernapas atau minum air.
-            </p>
-          </div>
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
             <div className="text-4xl mb-4">📅</div>
             <h3 className="text-xl font-semibold mb-3 text-gray-800">Jadwal Terstruktur</h3>
@@ -49,6 +42,30 @@ export default function Home() {
               Jauhkan perangkat game dari tempat tidur agar tidak tergoda secara konstan.
             </p>
           </div>
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+            <div className="text-4xl mb-4">📝</div>
+            <h3 className="text-xl font-semibold mb-3 text-gray-800">Kontrak Belajar</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Buat komitmen harian dengan diri sendiri. Rencanakan, jalankan, dan evaluasi.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Kontrak Belajar CTA */}
+      <section className="py-20 bg-indigo-900 text-white relative overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-yellow-400">
+            Siap Mengatur Dirimu Sendiri?
+          </h2>
+          <p className="text-xl md:text-2xl text-indigo-100 mb-10 max-w-2xl mx-auto">
+            Gunakan <strong>Self-Management Contract</strong> harian untuk memantau kemajuan, fokus, dan merayakan keberhasilanmu!
+          </p>
+          <Link href="/kontrak-belajar">
+            <button className="bg-yellow-400 text-indigo-900 font-black py-4 px-12 rounded-full hover:bg-yellow-300 transition-all shadow-[0_0_40px_rgba(250,204,21,0.5)] transform hover:-translate-y-1 active:scale-95 text-lg cursor-pointer">
+              BUAT KONTRAK BELAJAR SEKARANG 📝
+            </button>
+          </Link>
         </div>
       </section>
 
@@ -103,9 +120,9 @@ export default function Home() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900">Manajemen Waktu Strategis</h3>
+                <h3 className="text-2xl font-bold mb-3 text-gray-900">Metakognisi (Mengatur Pikiran Saat Belajar)</h3>
                 <p className="text-lg leading-relaxed text-gray-700 text-center mb-6">
-                  Implementasi metode Eisenhower untuk efisiensi kerja profesional di era digital..
+                  Metakognisi adalah kesadaran dan kemampuan siswa untuk mengatur cara berpikirnya sendiri saat belajar.
                 </p>
                 <Link href="/PembelajaranDetail1">
                   <span className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
@@ -127,9 +144,9 @@ export default function Home() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900">Protokol Deep Work</h3>
+                <h3 className="text-2xl font-bold mb-3 text-gray-900">Motivasi (Menggerakkan Diri untuk Belajar)</h3>
                 <p className="text-lg leading-relaxed text-gray-700 text-center mb-6">
-                  Meningkatkan kapasitas kognitif melalui teknik fokus mendalam tanpa distraksi.
+                  Motivasi adalah dorongan dalam diri siswa yang membuatnya mau belajar dan bertahan meskipun mengalami kesulitan.
                 </p>
                 <Link href="/PembelajaranDetail2">
                   <span className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
@@ -151,9 +168,10 @@ export default function Home() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900">Regulasi Psikologi & Emosi</h3>
+                <h3 className="text-2xl font-bold mb-3 text-gray-900"> Perilaku (Tindakan Nyata dalam Belajar)
+</h3>
                 <p className="text-lg leading-relaxed text-gray-700 text-center mb-6">
-                  Pendekatan berbasis sains untuk mengelola stres dan menjaga resiliensi profesional.
+                  Aspek perilaku adalah bagaimana siswa mengatur tindakan nyata selama proses belajar.
                 </p>
                 <Link href="/PembelajaranDetail3">
                   <span className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
@@ -177,7 +195,7 @@ export default function Home() {
             <div className="group relative rounded-3xl overflow-hidden shadow-xl bg-black aspect-video">
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/58FZC314DZg"
+                src="https://www.youtube.com/embed/HM5m1oAaY3k"
                 title="Dampak Kecanduan Game pada Otak"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -187,7 +205,7 @@ export default function Home() {
             <div className="group relative rounded-3xl overflow-hidden shadow-xl bg-black aspect-video">
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/dMQKMuoyAM4"
+                src="https://www.youtube.com/embed/9jvDBFpQGqE"
                 title="Teknik Deep Work & Kontrol Diri"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
