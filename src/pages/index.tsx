@@ -19,9 +19,11 @@ export default function Home() {
           <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-10">
             Kurikulum eksekutif untuk membangun disiplin dan fokus di standar lingkungan
           </p>
+          <Link href="/PembelajaranDetail1">
           <button className="bg-white text-blue-600 font-bold py-4 px-10 rounded-full hover:bg-blue-50 transition-all shadow-xl active:scale-95">
             Mulai Belajar Sekarang
-          </button>
+            </button>
+            </Link>
         </div>
       </section>
 
