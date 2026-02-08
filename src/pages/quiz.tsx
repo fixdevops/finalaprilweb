@@ -5,51 +5,58 @@ import Link from 'next/link';
 const questions = [
   {
     id: 1,
-    question: "Dalam Eisenhower Matrix, tugas 'Penting tetapi Tidak Mendesak' masuk ke dalam Kuadran 2. Apa tindakan yang harus dilakukan?",
-    options: ["Lakukan Sekarang", "Jadwalkan Waktunya", "Delegasikan ke Orang Lain", "Hapus dari Daftar"],
+    question: "Saat memiliki tugas sekolah dan ingin bermain game, saya biasanya …",
+    options: [
+      "Bermain game terlebih dahulu sebagai pemanasan.",
+      "Mengerjakan tugas sampai selesai baru bermain sebagai reward.",
+      "Mengerjakan setengah tugas, lalu bermain sebentar.",
+      "Mengabaikan tugas dan fokus mengejar rank."
+    ],
     answer: 1
   },
   {
     id: 2,
-    question: "Apa yang menjadi musuh utama dari 'Deep Work' yang sering menipu kita seolah-olah sedang produktif?",
-    options: ["Hard Work", "Shallow Work", "Team Work", "Smart Work"],
-    answer: 1
-  },
-  {
-    id: 3,
-    question: "Teknik 'The Pause' dalam regulasi emosi bertujuan untuk...",
-    options: ["Berhenti belajar selamanya", "Menghindari materi yang sulit", "Menenangkan saraf dan mengingat 'Big Why'", "Mencari hiburan di media sosial"],
+    question: "Apa yang paling menggambarkan perasaanmu saat tidak bisa bermain game seharian?",
+    options: [
+      "Merasa sangat gelisah, marah, dan tidak bisa fokus pada hal lain.",
+      "Merasa bosan sebentar tapi bisa mencari aktivitas lain.",
+      "Biasa saja dan menikmati waktu istirahat atau hobi lain.",
+      "Merasa dunia kiamat dan terus memikirkan game."
+    ],
     answer: 2
   },
   {
+    id: 3,
+    question: "Pernahkah kamu berbohong kepada orang tua atau teman terkait durasi bermain gamemu?",
+    options: [
+      "Tidak pernah, saya jujur dengan waktu yang saya gunakan.",
+      "Pernah, beberapa kali agar tidak dimarahi.",
+      "Sering, agar bisa terus bermain tanpa gangguan.",
+      "Selalu, karena mereka tidak akan mengerti."
+    ],
+    answer: 0
+  },
+  {
     id: 4,
-    question: "Apa langkah terakhir dalam siklus Refleksi Kendiri yang efektif?",
-    options: ["Menyalahkan diri sendiri", "Menyusun rencana perbaikan spesifik", "Melupakan kegagalan", "Berhenti berevaluasi"],
+    question: "Manakah prinsip 'Self-Control' yang paling efektif menurutmu?",
+    options: [
+      "Bermain sampai puas baru belajar.",
+      "Menaruh gadget di ruangan lain saat sedang belajar.",
+      "Main game sambil zoom meeting sekolah.",
+      "Menunggu sampai ngantuk berat baru tidur."
+    ],
     answer: 1
   },
   {
     id: 5,
-    question: "Cal Newport menyarankan 'Shutdown Ritual' di sore hari. Apa kegunaan utamanya?",
-    options: ["Menambah jam kerja", "Membersihkan kantor", "Memberi sinyal otak untuk istirahat total", "Menyiapkan kopi untuk besok"],
-    answer: 2
-  },
-  {
-    id: 6,
-    question: "Kuadran 3 dalam manajemen waktu seringkali berisi interupsi. Apa tindakan yang tepat?",
-    options: ["Prioritaskan", "Delegasikan", "Jadwalkan", "Abaikan Selamanya"],
+    question: "Apa tindakanmu saat orang tua mengingatkan untuk berhenti karena sudah larut malam?",
+    options: [
+      "Marah-marah dan tetap melanjutkan game.",
+      "Berhenti segera dan bersiap untuk istirahat.",
+      "Bilang '5 menit lagi' berkali-kali sampai berjam-jam.",
+      "Sembunyi di balik selimut untuk tetap main."
+    ],
     answer: 1
-  },
-  {
-    id: 7,
-    question: "Resiliensi Kognitif mengajarkan kita untuk melihat kegagalan sebagai...",
-    options: ["Tanda tidak berbakat", "Data dan umpan balik untuk perbaikan", "Nasib buruk", "Alasan untuk menyerah"],
-    answer: 1
-  },
-  {
-    id: 8,
-    question: "Manakah filosofi Deep Work yang menjadwalkan blok waktu fokus tertentu setiap hari?",
-    options: ["Monastic", "Bimodal", "Rhythmic", "Journalistic"],
-    answer: 2
   }
 ];
 
@@ -58,15 +65,11 @@ export default function Quiz() {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [animatedScore, setAnimatedScore] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
-  // Efek animasi angka skor di akhir
   useEffect(() => {
-    if (showResult && animatedScore < (score / questions.length) * 100) {
-      const timer = setTimeout(() => setAnimatedScore(prev => prev + 1), 20);
-      return () => clearTimeout(timer);
-    }
-  }, [showResult, animatedScore, score]);
+    setMounted(true);
+  }, []);
 
   const handleAnswerClick = (index: number) => {
     setSelectedAnswer(index);
@@ -82,115 +85,191 @@ export default function Quiz() {
       } else {
         setShowResult(true);
       }
-    }, 500);
+    }, 800);
   };
 
   const getPerformanceMessage = () => {
     const finalScore = (score / questions.length) * 100;
-    if (finalScore === 100) return { title: "LEGENDARY!", msg: "Anda adalah Master of Self-Management.", icon: "💎" };
-    if (finalScore >= 75) return { title: "EXCELLENT!", msg: "Pemahaman Anda sangat mendalam.", icon: "🌟" };
-    if (finalScore >= 50) return { title: "GOOD JOB!", msg: "Anda berada di jalur yang benar.", icon: "📈" };
-    return { title: "KEEP LEARNING!", msg: "Mari tinjau kembali materinya.", icon: "📚" };
+    if (finalScore === 100) return { 
+      title: "SEMPURNA!", 
+      msg: "Kamu memiliki kendali diri yang luar biasa! 🏆", 
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      borderColor: "border-green-200"
+    };
+    if (finalScore >= 75) return { 
+      title: "SANGAT BAIK!", 
+      msg: "Kamu sangat sadar akan batasan dirimu. Pertahankan! 🔥", 
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      borderColor: "border-blue-200"
+    };
+    if (finalScore >= 50) return { 
+      title: "CUKUP BAIK!", 
+      msg: "Kamu sudah di jalur yang benar, tetaplah konsisten. ⚖️", 
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
+      borderColor: "border-yellow-200"
+    };
+    return { 
+      title: "PERLU PERBAIKAN", 
+      msg: "Hati-hati, kontrol dirimu mulai melemah. Yuk belajar lagi! ⚠️", 
+      color: "text-red-600",
+      bgColor: "bg-red-50",
+      borderColor: "border-red-200"
+    };
   };
 
+  if (!mounted) return null;
+
   const performance = getPerformanceMessage();
+  const percentage = Math.round((score / questions.length) * 100);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 md:py-20 font-sans">
+    <div className="min-h-screen bg-gray-50 py-12 px-4">
       <Head>
-        <title>Quiz Mastery | The Self Learning Hub</title>
+        <title>Kuis BK: Self-Control - DiaWeb</title>
       </Head>
 
-      <div className="max-w-2xl mx-auto px-4">
+      <div className="max-w-3xl mx-auto">
         {!showResult ? (
-          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden transition-all">
-            <div className="h-3 w-full bg-slate-100">
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Progress Bar */}
+            <div className="h-2 bg-gray-100">
               <div 
-                className="h-full bg-linear-to-r from-blue-500 to-indigo-600 transition-all duration-700 ease-out" 
+                className="h-full bg-blue-600 transition-all duration-500"
                 style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-              ></div>
+              />
             </div>
 
-            <div className="p-8 md:p-14">
+            <div className="p-8 md:p-12">
+              {/* Question Counter */}
               <div className="flex justify-between items-center mb-8">
-                <span className="text-blue-600 font-black tracking-tighter text-lg uppercase">
-                   Q.0{currentQuestion + 1}
-                </span>
-                <span className="text-slate-400 font-medium text-sm">
-                  Mastery Progress: {Math.round(((currentQuestion) / questions.length) * 100)}%
+                <div className="flex items-center gap-3">
+                  <span className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">
+                    {currentQuestion + 1}
+                  </span>
+                  <span className="text-gray-500 font-medium text-sm">
+                    dari {questions.length} pertanyaan
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
+                  {Math.round(((currentQuestion) / questions.length) * 100)}% Selesai
                 </span>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-10 leading-tight">
+              {/* Question */}
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 leading-tight">
                 {questions[currentQuestion].question}
               </h2>
 
-              <div className="space-y-4">
+              {/* Options */}
+              <div className="space-y-3">
                 {questions[currentQuestion].options.map((option, index) => (
                   <button
                     key={index}
                     onClick={() => handleAnswerClick(index)}
                     disabled={selectedAnswer !== null}
-                    className={`w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 font-semibold text-lg
+                    className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 group
                       ${selectedAnswer === index 
-                        ? 'border-blue-600 bg-blue-50 text-blue-700 scale-[1.02] shadow-lg' 
-                        : 'border-slate-100 bg-slate-50 text-slate-600 hover:border-blue-200 hover:bg-white hover:shadow-md'}
+                        ? index === questions[currentQuestion].answer
+                          ? 'border-green-500 bg-green-50 text-green-900'
+                          : 'border-red-500 bg-red-50 text-red-900'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50'}
+                      ${selectedAnswer !== null && index === questions[currentQuestion].answer
+                        ? 'border-green-500 bg-green-50'
+                        : ''}
                     `}
                   >
-                    <div className="flex items-center">
-                      <span className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center mr-4 text-sm shadow-sm">
-                        {String.fromCharCode(65 + index)}
-                      </span>
-                      {option}
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-colors
+                      ${selectedAnswer === index 
+                        ? index === questions[currentQuestion].answer
+                          ? 'bg-green-500 text-white'
+                          : 'bg-red-500 text-white'
+                        : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'}
+                      ${selectedAnswer !== null && index === questions[currentQuestion].answer
+                        ? 'bg-green-500 text-white'
+                        : ''}
+                    `}>
+                      {String.fromCharCode(65 + index)}
                     </div>
+                    <span className="font-medium flex-1">{option}</span>
+                    {selectedAnswer !== null && index === questions[currentQuestion].answer && (
+                      <span className="text-green-500 font-bold">✓</span>
+                    )}
+                    {selectedAnswer === index && index !== questions[currentQuestion].answer && (
+                      <span className="text-red-500 font-bold">✗</span>
+                    )}
                   </button>
                 ))}
               </div>
             </div>
           </div>
         ) : (
-          /* HASIL AKHIR YANG MENARIK */
-          <div className="bg-white rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] p-10 md:p-16 text-center border border-slate-100 animate-in fade-in zoom-in duration-700">
-            <div className="text-6xl mb-6">{performance.icon}</div>
-            <h2 className="text-5xl font-black text-slate-900 mb-2 tracking-tighter">{performance.title}</h2>
-            <p className="text-slate-500 text-xl mb-10">{performance.msg}</p>
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 text-center">
+            <div className={`inline-block px-4 py-2 rounded-full ${performance.bgColor} ${performance.borderColor} border-2 mb-6`}>
+              <span className={`font-bold text-sm ${performance.color}`}>HASIL KUIS</span>
+            </div>
+
+            <h2 className={`text-4xl md:text-5xl font-black mb-4 ${performance.color}`}>
+              {performance.title}
+            </h2>
+            <p className="text-xl text-gray-600 mb-10">{performance.msg}</p>
             
-            <div className="relative inline-block mb-12">
-               <svg className="w-48 h-48 transform -rotate-90">
-                  <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-slate-100" />
-                  <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" 
-                    strokeDasharray={552.92}
-                    strokeDashoffset={552.92 - (552.92 * animatedScore) / 100}
-                    className="text-blue-600 transition-all duration-1000 ease-out" 
-                    strokeLinecap="round"
-                  />
-               </svg>
-               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-5xl font-black text-slate-900">{animatedScore}%</span>
-                  <span className="text-slate-400 font-bold text-xs uppercase tracking-widest">Score</span>
-               </div>
+            {/* Score Circle */}
+            <div className="relative inline-block mb-10">
+              <svg className="w-48 h-48 transform -rotate-90">
+                <circle 
+                  cx="96" cy="96" r="88" 
+                  stroke="currentColor" 
+                  strokeWidth="12" 
+                  fill="transparent" 
+                  className="text-gray-100" 
+                />
+                <circle 
+                  cx="96" cy="96" r="88" 
+                  stroke="currentColor" 
+                  strokeWidth="12" 
+                  fill="transparent" 
+                  strokeDasharray={552.92}
+                  strokeDashoffset={552.92 - (552.92 * percentage) / 100}
+                  className={percentage >= 75 ? 'text-green-500' : percentage >= 50 ? 'text-blue-500' : 'text-red-500'}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-5xl font-black text-gray-900">{percentage}%</span>
+                <span className="text-gray-500 font-bold text-xs uppercase">Skor Anda</span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-10">
-               <div className="bg-green-50 p-4 rounded-3xl border border-green-100">
-                  <p className="text-green-700 font-black text-2xl">{score}</p>
-                  <p className="text-green-600 text-xs font-bold uppercase">Benar</p>
-               </div>
-               <div className="bg-red-50 p-4 rounded-3xl border border-red-100">
-                  <p className="text-red-700 font-black text-2xl">{questions.length - score}</p>
-                  <p className="text-red-600 text-xs font-bold uppercase">Salah</p>
-               </div>
+            {/* Score Details */}
+            <div className="grid grid-cols-2 gap-4 mb-10 max-w-sm mx-auto">
+              <div className="bg-green-50 border-2 border-green-200 p-4 rounded-2xl">
+                <p className="text-green-600 font-black text-3xl">{score}</p>
+                <p className="text-green-600 text-xs font-bold uppercase">Benar</p>
+              </div>
+              <div className="bg-red-50 border-2 border-red-200 p-4 rounded-2xl">
+                <p className="text-red-600 font-black text-3xl">{questions.length - score}</p>
+                <p className="text-red-600 text-xs font-bold uppercase">Salah</p>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-4">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
               <button 
-                onClick={() => { setAnimatedScore(0); setSelectedAnswer(null); setShowResult(false); setCurrentQuestion(0); setScore(0); }}
-                className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 transition-all shadow-[0_10px_20px_rgba(37,99,235,0.3)] hover:-translate-y-1"
+                onClick={() => { 
+                  setSelectedAnswer(null); 
+                  setShowResult(false); 
+                  setCurrentQuestion(0); 
+                  setScore(0); 
+                }}
+                className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg"
               >
-                COBA LAGI
+                Ulangi Kuis
               </button>
-              <Link href="/pembelajaran" className="w-full py-5 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all">
-                KEMBALI KE MATERI
+              <Link href="/" className="flex-1 py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all text-center">
+                Kembali ke Beranda
               </Link>
             </div>
           </div>

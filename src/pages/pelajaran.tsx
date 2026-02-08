@@ -38,11 +38,11 @@ const materiList = [
   }
 ];
 
-export default function Pembelajaran() {
+export default function Pelajaran() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>Materi Pembelajaran</title>
+        <title>Materi Pembelajaran - DiaWeb</title>
       </Head>
 
       {/* Hero Section */}
