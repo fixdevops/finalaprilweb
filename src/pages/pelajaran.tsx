@@ -98,7 +98,7 @@ export default function Home() {
       <footer className="py-12 bg-white border-t border-slate-200">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="font-bold text-slate-800 tracking-tight">Theselflearinghub</p>
-          <p className="text-sm text-slate-500">© 2026 DiaWeb Edukasi. Bangga Mengontrol Diri.</p>
+          <p className="text-sm text-slate-500">© 2026 AprilWeb Edukasi. Bangga Mengontrol Diri.</p>
           <div className="flex gap-4">
             <div className="w-8 h-8 rounded-full bg-slate-100 italic flex items-center justify-center font-serif text-slate-400">f</div>
             <div className="w-8 h-8 rounded-full bg-slate-100 italic flex items-center justify-center font-serif text-slate-400">t</div>

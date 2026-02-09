@@ -231,7 +231,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-12 text-center text-gray-400 border-t bg-white">
-        <p>© 2026 DiaWeb Edukasi. Bangga Mengontrol Diri.</p>
+        <p>© 2026 AprilWeb Edukasi. Bangga Mengontrol Diri.</p>
       </footer>
     </div>
   );
