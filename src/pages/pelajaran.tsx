@@ -2,121 +2,109 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const materiList = [
-  {
-    id: 1,
-    title: "Kenali Gejala Kecanduan",
-    desc: "Seringkali kita tidak sadar. Gejalanya meliputi merasa gelisah saat tidak main game, mengabaikan tugas sekolah, hingga pola tidur yang berantakan.",
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
-    badge: "Tahap 1",
-    badgeColor: "bg-red-500",
-    borderColor: "border-red-200",
-    bgColor: "bg-red-50",
-    link: "/PembelajaranDetail1"
-  },
-  {
-    id: 2,
-    title: "Teknik Cognitive Reframing",
-    desc: "Belajar mengubah pola pikir otomatis. Ubah kalimat 'Aku harus main sekarang' menjadi kesadaran akan tanggung jawab masa depan.",
-    image: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=800",
-    badge: "Tahap 2",
-    badgeColor: "bg-blue-500",
-    borderColor: "border-blue-200",
-    bgColor: "bg-blue-50",
-    link: "/PembelajaranDetail2"
-  },
-  {
-    id: 3,
-    title: "Metode Pembatasan Fisik",
-    desc: "Ciptakan jarak antara dirimu dan perangkat game. Menaruh ponsel di ruangan berbeda adalah cara efektif membangun 'hambatan' psikologis.",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800",
-    badge: "Tahap 3",
-    badgeColor: "bg-green-500",
-    borderColor: "border-green-200",
-    bgColor: "bg-green-50",
-    link: "/PembelajaranDetail3"
-  }
-];
+export default function Home() {
+  const materi = [
+    {
+      title: "Metakognisi",
+      subtitle: "Mengatur Pikiran Saat Belajar",
+      desc: "Kesadaran dan kemampuan untuk mengatur cara berpikir sendiri secara strategis.",
+      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400&h=250",
+      link: "/PembelajaranDetail1",
+      color: "border-rose-200 bg-rose-50 text-rose-700",
+      btnColor: "bg-rose-600 hover:bg-rose-700"
+    },
+    {
+      title: "Motivasi",
+      subtitle: "Menggerakkan Diri untuk Belajar",
+      desc: "Dorongan internal yang membuat Anda tetap bertahan meski menghadapi kesulitan.",
+      image: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=400&h=250",
+      link: "/PembelajaranDetail2",
+      color: "border-sky-200 bg-sky-50 text-sky-700",
+      btnColor: "bg-sky-600 hover:bg-sky-700"
+    },
+    {
+      title: "Perilaku",
+      subtitle: "Tindakan Nyata dalam Belajar",
+      desc: "Bagaimana mengatur tindakan konkret dan kebiasaan selama proses pembelajaran.",
+      image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=400&h=250",
+      link: "/PembelajaranDetail3",
+      color: "border-emerald-200 bg-emerald-50 text-emerald-700",
+      btnColor: "bg-emerald-600 hover:bg-emerald-700"
+    }
+  ];
 
-export default function Pelajaran() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 font-sans antialiased text-slate-900">
       <Head>
-        <title>Materi Pembelajaran - DiaWeb</title>
+        <title>Self Learning Hub | Kendali Diri & Edukasi</title>
+        <meta name="description" content="Edukasi pengendalian diri terhadap kecanduan game" />
       </Head>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
-            Kurikulum Self-Control
-          </h1>
-          <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-            Selesaikan setiap tahapan untuk membangun ketahanan mental yang kuat dan kendali diri yang optimal.
-          </p>
-          <div className="w-24 h-1.5 bg-white mx-auto mt-8 rounded-full"></div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-16 px-4 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8">
-          {materiList.map((materi) => (
-            <div 
-              key={materi.id} 
-              className={`bg-white rounded-3xl shadow-sm border-2 ${materi.borderColor} overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}
-            >
-              {/* Image */}
-              <div className="relative h-56 overflow-hidden">
-                <Image 
-                  src={materi.image}
-                  alt={materi.title}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <span className={`absolute top-4 left-4 ${materi.badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full`}>
-                  {materi.badge}
-                </span>
-              </div>
-
-              {/* Content */}
-              <div className={`p-8 ${materi.bgColor}`}>
-                <h3 className="text-2xl font-bold mb-4 text-gray-900">
-                  {materi.title}
-                </h3>
-                <p className="text-gray-700 leading-relaxed mb-6 text-sm">
-                  {materi.desc}
-                </p>
-                <Link href={materi.link}>
-                  <button className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-full font-bold hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg">
-                    Pelajari Lebih Lanjut →
-                  </button>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-white border-t border-gray-100">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-12 md:p-16 text-white shadow-2xl">
-            <h2 className="text-3xl md:text-5xl font-extrabold mb-6">
-              Siap Menguji Kontrol Dirimu?
-            </h2>
-            <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-              Setelah mempelajari semua materi, saatnya untuk verifikasi sejauh mana kamu bisa menguasai dirimu.
+      <main>
+        {/* Header Section */}
+        <section className="relative py-20 overflow-hidden bg-white">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+          
+          <div className="relative max-w-5xl mx-auto px-6 text-center">
+            <h1 className="text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-6">
+              Materi <span className="text-blue-600">Pembelajaran</span>
+            </h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Pahami langkah-langkah strategis untuk kendali diri yang lebih baik dan transformasi kebiasaan belajar Anda.
             </p>
-            <Link href="/quiz">
-              <button className="bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all shadow-xl active:scale-95">
-                Mulai Kuis Sekarang
-              </button>
-            </Link>
+            <div className="w-20 h-1.5 bg-blue-600 mx-auto mt-8 rounded-full"></div>
+          </div>
+        </section>
+
+        {/* Content Cards */}
+        <section className="pb-24 px-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            {materi.map((item, index) => (
+              <div 
+                key={index} 
+                className={`group flex flex-col rounded-3xl border-2 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${item.color}`}
+              >
+                <div className="p-2">
+                  <div className="relative h-52 w-full rounded-2xl overflow-hidden shadow-inner">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                </div>
+                
+                <div className="p-8 flex flex-col flex-grow text-center">
+                  <span className="text-xs uppercase tracking-widest font-bold mb-2 opacity-70">{item.subtitle}</span>
+                  <h3 className="text-2xl font-bold mb-4 text-slate-900">{item.title}</h3>
+                  <p className="text-slate-600 leading-relaxed mb-8 flex-grow">
+                    {item.desc}
+                  </p>
+                  
+                  <Link href={item.link}>
+                    <span className={`inline-block w-full py-4 rounded-xl text-white font-bold transition-colors shadow-md ${item.btnColor}`}>
+                      Pelajari Lebih Lanjut
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="py-12 bg-white border-t border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="font-bold text-slate-800 tracking-tight">Theselflearinghub</p>
+          <p className="text-sm text-slate-500">© 2026 DiaWeb Edukasi. Bangga Mengontrol Diri.</p>
+          <div className="flex gap-4">
+            <div className="w-8 h-8 rounded-full bg-slate-100 italic flex items-center justify-center font-serif text-slate-400">f</div>
+            <div className="w-8 h-8 rounded-full bg-slate-100 italic flex items-center justify-center font-serif text-slate-400">t</div>
           </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }

@@ -1,184 +1,171 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Head from 'next/head';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-export default function LearningContract() {
-  const contractRef = useRef<HTMLDivElement>(null);
+const questions = [
+  { id: 1, q: "Saya lebih mudah mengingat sesuatu jika…", options: [{ t: "A", text: "Ada gambar atau diagram", v: "visual" }, { t: "B", text: "Dijelaskan dengan suara", v: "auditori" }, { t: "C", text: "Dicoba langsung", v: "kinestetik" }] },
+  { id: 2, q: "Saat belajar, saya suka…", options: [{ t: "A", text: "Membaca catatan atau buku", v: "visual" }, { t: "B", text: "Mendengar penjelasan orang", v: "auditori" }, { t: "C", text: "Praktek langsung", v: "kinestetik" }] },
+  { id: 3, q: "Saya cepat paham jika…", options: [{ t: "A", text: "Ada ilustrasi atau contoh visual", v: "visual" }, { t: "B", text: "Dijelaskan panjang lebar", v: "auditori" }, { t: "C", text: "Dicoba sendiri", v: "kinestetik" }] },
+  // Tambahkan soal lainnya di sini
+];
+
+export default function QuizLearningStyle() {
+  const resultRef = useRef<HTMLDivElement>(null);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [showResult, setShowResult] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const [target, setTarget] = useState('');
-  const [result, setResult] = useState('');
-  const [reward, setReward] = useState('');
-  const [checks, setChecks] = useState({
-    hp: false,
-    pomodoro: false,
-    mood: false
-  });
+  // Mencegah error Hydration Next.js
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleSelect = (qId: number, value: string) => {
+    setAnswers((prev) => ({ ...prev, [qId]: value }));
+  };
+
+  const calculateResult = () => {
+    const counts = { visual: 0, auditori: 0, kinestetik: 0 };
+    Object.values(answers).forEach((v) => {
+      if (v === 'visual') counts.visual++;
+      if (v === 'auditori') counts.auditori++;
+      if (v === 'kinestetik') counts.kinestetik++;
+    });
+    return [
+      { name: 'Visual', value: counts.visual, color: '#3b82f6' },
+      { name: 'Auditori', value: counts.auditori, color: '#10b981' },
+      { name: 'Kinestetik', value: counts.kinestetik, color: '#f59e0b' },
+    ];
+  };
+
+  const dataResult = calculateResult();
+  const dominant = dataResult.reduce((prev, current) => (prev.value > current.value ? prev : current));
 
   const handleDownload = async () => {
-    if (!contractRef.current) return;
+    if (!resultRef.current) return;
     setIsGenerating(true);
-
     try {
       const html2canvas = (await import('html2canvas')).default;
       const { jsPDF } = await import('jspdf');
 
-      const element = contractRef.current;
-      
-      const canvas = await html2canvas(element, { 
-        scale: 3, // Skala 3 cukup untuk HP agar tidak crash/terlalu berat
+      const canvas = await html2canvas(resultRef.current, {
+        scale: 2,
         useCORS: true,
-        logging: false,
         backgroundColor: '#ffffff',
+        logging: false
       });
-      
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      const pageWidth = 297;
-      const pageHeight = 210;
-      const canvasRatio = canvas.width / canvas.height;
-      
-      let finalWidth = pageWidth;
-      let finalHeight = pageWidth / canvasRatio;
-      let x = 0;
-      let y = (pageHeight - finalHeight) / 2;
 
-      pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
-      pdf.save(`kontrak-belajar-${new Date().toISOString().split('T')[0]}.pdf`);
-      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Hasil-Gaya-Belajar.pdf`);
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Gagal mengunduh PDF.');
+      console.error(error);
+      alert("Gagal mengunduh PDF. Pastikan library terinstall.");
     } finally {
       setIsGenerating(false);
     }
   };
 
+  // Jika belum mounted, jangan render chart dulu untuk hindari error
+  if (!mounted) return <div className="p-8 text-center">Memuat...</div>;
+
   return (
-    <div className="min-h-screen bg-indigo-50/30 p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
       <Head>
-        <title>Kontrak Belajar - Self Management</title>
+        <title>Tes Gaya Belajar</title>
       </Head>
 
-      <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-2xl md:text-5xl font-extrabold text-blue-900 mb-4 md:mb-6 leading-tight">
-            Yuk, Mulai Atur Diri Sendiri!
-          </h1>
-          <p className="text-sm md:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed px-2">
-            Belajar itu butuh strategi! Dengan menguasai <strong>Self-Management</strong>, kamu bisa mencapai tujuan belajarmu lebih efektif. 
-          </p>
-        </div>
-
-        {/* Contract Area */}
-        <div className="flex justify-center mb-8 md:mb-12 overflow-x-hidden">
-          <div 
-            ref={contractRef} 
-            className="p-6 md:p-12 rounded-[1.5rem] md:rounded-[3rem] shadow-2xl w-full max-w-5xl relative overflow-hidden"
-            style={{ backgroundColor: '#ffffff', borderColor: '#f3f4f6', borderWidth: '1px' }}
-          >
-            {/* Gradient Top Line */}
-            <div className="absolute top-0 left-0 w-full h-2" style={{ background: 'linear-gradient(to right, #60a5fa, #4ade80, #facc15)' }}></div>
+      <div className="max-w-3xl mx-auto">
+        {!showResult ? (
+          <div className="bg-white p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100">
+            <h1 className="text-2xl md:text-3xl font-black text-center text-blue-900 mb-8">🎯 Cek Gaya Belajarmu</h1>
             
-            <h2 
-              className="text-lg md:text-3xl font-black text-center mb-8 py-3 px-6 rounded-full block md:inline-block md:relative md:left-1/2 md:transform md:-translate-x-1/2 shadow-sm border"
-              style={{ backgroundColor: '#eff6ff', color: '#1e3a8a', borderColor: '#dbeafe' }}
-            >
-              📝 Kontrak Belajar Hari Ini!
-            </h2>
-
-            {/* Grid yang Responsif: 1 kolom di HP, 3 kolom di Desktop */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              
-              {/* Card 1: Planning */}
-              <div className="rounded-2xl md:rounded-3xl p-5 md:p-6 border-2 shadow-lg flex flex-col" style={{ backgroundColor: '#eff6ff', borderColor: '#bfdbfe' }}>
-                <div className="py-2 md:py-3 px-4 rounded-xl mb-4 text-center shadow-md" style={{ backgroundColor: '#3b82f6', color: '#ffffff' }}>
-                  <h3 className="font-bold text-sm md:text-lg uppercase">1. RENCANAKAN!</h3>
-                </div>
-                <div className="space-y-4">
-                  <label className="block text-sm font-bold" style={{ color: '#1e40af' }}>Targetku:</label>
-                  <input 
-                    type="text" 
-                    placeholder="Contoh: Bab 3 Fisika" 
-                    value={target}
-                    onChange={(e) => setTarget(e.target.value)}
-                    className="w-full p-3 rounded-lg border-2 outline-none text-sm md:text-base"
-                    style={{ borderColor: '#bfdbfe' }}
-                  />
-                </div>
-              </div>
-
-              {/* Card 2: Monitoring */}
-              <div className="rounded-2xl md:rounded-3xl p-5 md:p-6 border-2 shadow-lg flex flex-col" style={{ backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' }}>
-                <div className="py-2 md:py-3 px-4 rounded-xl mb-4 text-center shadow-md" style={{ backgroundColor: '#22c55e', color: '#ffffff' }}>
-                  <h3 className="font-bold text-sm md:text-lg uppercase">2. FOKUS!</h3>
-                </div>
-                <div className="space-y-3">
-                  {['hp', 'pomodoro', 'mood'].map((key) => (
-                    <label key={key} className="flex items-center space-x-3 p-2 rounded-lg bg-white border border-green-100 cursor-pointer">
+            {questions.map((item) => (
+              <div key={item.id} className="mb-8 border-b border-gray-50 pb-6">
+                <p className="font-bold text-black mb-4">{item.id}. {item.q}</p>
+                <div className="grid gap-3">
+                  {item.options.map((opt) => (
+                    <label key={opt.t} className="flex items-center space-x-3 p-4 rounded-xl border-2 border-gray-100 hover:border-blue-400 cursor-pointer transition-all bg-white">
                       <input 
-                        type="checkbox" 
-                        checked={checks[key as keyof typeof checks]}
-                        onChange={(e) => setChecks({...checks, [key]: e.target.checked})}
-                        className="w-5 h-5 rounded"
+                        type="radio" 
+                        name={`q-${item.id}`} 
+                        checked={answers[item.id] === opt.v}
+                        onChange={() => handleSelect(item.id, opt.v)}
+                        className="w-5 h-5 text-blue-600"
                       />
-                      <span className="text-xs md:text-sm font-bold text-gray-700 capitalize">
-                        {key === 'hp' ? '📵 Jauhkan HP' : key === 'pomodoro' ? '⏱️ Pomodoro' : '😊 Check Mood'}
-                      </span>
+                      <span className="font-medium text-black">{opt.text}</span>
                     </label>
                   ))}
                 </div>
               </div>
+            ))}
 
-              {/* Card 3: Evaluation */}
-              <div className="rounded-2xl md:rounded-3xl p-5 md:p-6 border-2 shadow-lg flex flex-col" style={{ backgroundColor: '#fffbeb', borderColor: '#fde68a' }}>
-                <div className="py-2 md:py-3 px-4 rounded-xl mb-4 text-center shadow-md" style={{ backgroundColor: '#fbbf24', color: '#ffffff' }}>
-                  <h3 className="font-bold text-sm md:text-lg uppercase">3. CEK & RAYAKAN!</h3>
-                </div>
-                <div className="space-y-3">
-                  <textarea 
-                    placeholder="Hasil..." 
-                    rows={2}
-                    value={result}
-                    onChange={(e) => setResult(e.target.value)}
-                    className="w-full p-2 rounded-lg border-2 text-xs md:text-sm resize-none"
-                    style={{ borderColor: '#fde68a' }}
-                  />
-                  <textarea 
-                    placeholder="Hadiah..." 
-                    rows={2}
-                    value={reward}
-                    onChange={(e) => setReward(e.target.value)}
-                    className="w-full p-2 rounded-lg border-2 text-xs md:text-sm resize-none"
-                    style={{ borderColor: '#fde68a' }}
-                  />
-                </div>
+            <button 
+              onClick={() => setShowResult(true)}
+              disabled={Object.keys(answers).length < questions.length}
+              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              LIHAT HASIL & DOWNLOAD
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {/* Area PDF */}
+            <div ref={resultRef} className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-200 text-black">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-black text-blue-900">LAPORAN GAYA BELAJAR</h2>
+                <div className="h-1 w-20 bg-blue-500 mx-auto mt-2"></div>
               </div>
 
+              <div className="h-64 w-full mb-8" style={{ minHeight: '250px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={dataResult} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                      {dataResult.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-blue-50 p-6 rounded-2xl border-2 border-blue-100 mb-6 text-center text-black">
+                <p className="text-lg font-bold">Gaya Belajar Dominan Anda:</p>
+                <h3 className="text-4xl font-black text-blue-600 uppercase mt-2">{dominant.name}</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                 <h4 className="font-black text-lg border-b pb-2">Rincian Skor:</h4>
+                 {dataResult.map(res => (
+                   <div key={res.name} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border">
+                     <span className="font-bold">{res.name}</span>
+                     <span className="text-blue-600 font-black">{res.value} Poin</span>
+                   </div>
+                 ))}
+              </div>
+              
+              <p className="mt-8 text-[10px] text-center text-gray-400">Dicetak otomatis oleh Theselflearninghub pada {new Date().toLocaleDateString()}</p>
             </div>
 
-            <div className="mt-8 text-center text-[10px] md:text-sm font-medium text-gray-400">
-              © 2026 Theselflearninghub. Keep Growing!
+            <div className="flex flex-col gap-4">
+              <button 
+                onClick={handleDownload}
+                disabled={isGenerating}
+                className="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform"
+              >
+                {isGenerating ? 'MENYIAPKAN PDF...' : '📥 UNDUH HASIL PDF'}
+              </button>
+              <button onClick={() => setShowResult(false)} className="text-blue-600 font-bold underline text-center">Ulangi Tes</button>
             </div>
           </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="text-center pb-12 px-4">
-          <button 
-            onClick={handleDownload}
-            disabled={isGenerating}
-            className="w-full md:w-auto px-8 py-4 rounded-full font-black text-sm md:text-lg shadow-xl text-white flex items-center justify-center gap-3 mx-auto transition-transform active:scale-95"
-            style={{ background: 'linear-gradient(to right, #facc15, #f59e0b)' }}
-          >
-            {isGenerating ? 'MEMPROSES...' : 'SIMPAN & UNDUH PDF'}
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );

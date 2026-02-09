@@ -10,22 +10,34 @@ export default function Home() {
         <meta name="description" content="Edukasi pengendalian diri terhadap kecanduan game" />
       </Head>
 
+     <div className="bg-[#0f172a] min-h-screen font-sans">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-24 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
-            Platform <br /> Pengembangan Diri
-          </h1>
-          <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-10">
-            Kurikulum eksekutif untuk membangun disiplin dan fokus di standar lingkungan
+      <section className="relative pt-32 pb-24 px-6 border-b border-amber-900/20 bg-gradient-to-b from-[#1e293b] to-[#0f172a]">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-amber-500 font-semibold tracking-[0.2em] text-[11px] uppercase mb-6">
+            Scientific Approach to Self-Control
           </p>
-          <Link href="/PembelajaranDetail1">
-          <button className="bg-white text-blue-600 font-bold py-4 px-10 rounded-full hover:bg-blue-50 transition-all shadow-xl active:scale-95">
-            Mulai Belajar Sekarang
-            </button>
-            </Link>
+          <h1 className="text-4xl md:text-6xl font-bold text-stone-50 tracking-tight leading-tight mb-8">
+            Membangun disiplin diri melalui <br className="hidden md:block" /> 
+            pendekatan kurikulum terstruktur.
+          </h1>
+          <p className="text-lg text-stone-400 leading-relaxed max-w-2xl mb-12">
+            Platform edukasi yang dirancang untuk membantu Anda memahami mekanisme kontrol diri, 
+            mengelola fokus, dan membangun kebiasaan belajar yang berkelanjutan.
+          </p>
+          <div className="flex flex-wrap gap-4">
+              <Link href="/pelajaran">
+                <button className="bg-amber-600 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-amber-500 shadow-lg shadow-amber-900/20 transition-all text-sm">
+              Mulai Pembelajaran
+                </button>
+                </Link>
+          </div>
         </div>
       </section>
+
+      {/* Curriculum Section */}
+      
+    </div>
 
       {/* 3 Cards Section */}
       <section className="py-16 px-4 max-w-7xl mx-auto justify-center">
@@ -34,7 +46,7 @@ export default function Home() {
             <div className="text-4xl mb-4">📅</div>
             <h3 className="text-xl font-semibold mb-3 text-gray-800">Jadwal Terstruktur</h3>
             <p className="text-gray-600 leading-relaxed">
-              Gunakan aturan 'Kerja Dulu, Main Kemudian'. Jadikan bermain game sebagai reward tugas.
+              Gunakan aturan &apos;Kerja Dulu, Main Kemudian&apos;. Jadikan bermain game sebagai reward tugas.
             </p>
           </div>
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
@@ -55,12 +67,12 @@ export default function Home() {
       </section>
 
       {/* Kontrak Belajar CTA */}
-      <section className="py-20 bg-indigo-900 text-white relative overflow-hidden">
+      <section className="py-20 bg-amber-50 text-white relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
           <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-yellow-400">
             Siap Mengatur Dirimu Sendiri?
           </h2>
-          <p className="text-xl md:text-2xl text-indigo-100 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-accent mb-10 max-w-2xl mx-auto">
             Gunakan <strong>Self-Management Contract</strong> harian untuk memantau kemajuan, fokus, dan merayakan keberhasilanmu!
           </p>
           <Link href="/kontrak-belajar">
@@ -93,7 +105,7 @@ export default function Home() {
           </div>
           <div className="md:w-1/2 bg-blue-50 p-8 rounded-3xl border-2 border-dashed border-blue-200">
             <p className="italic text-blue-800 text-lg text-center">
-              "Kemenangan terbesar adalah kemenangan atas diri sendiri."
+              &quot;Kemenangan terbesar adalah kemenangan atas diri sendiri.&quot;
               <span className="font-bold mt-2 block">— Plato</span>
             </p>
           </div>
@@ -106,7 +118,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-extrabold text-gray-900">Materi Pembelajaran</h2>
             <p className="text-gray-600 mt-4">Pahami langkah-langkah ini untuk kendali diri yang lebih baik.</p>
-            <div className="w-24 h-1.5 bg-blue-600 mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1.5 bg-amber-50 mx-auto mt-6 rounded-full"></div>
           </div>
 
           <div className="space-y-10">
@@ -127,7 +139,7 @@ export default function Home() {
                   Metakognisi adalah kesadaran dan kemampuan siswa untuk mengatur cara berpikirnya sendiri saat belajar.
                 </p>
                 <Link href="/PembelajaranDetail1">
-                  <span className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
+                  <span className="cursor-pointer bg-linear-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
                     Pelajari Lebih Lanjut
                   </span>
                 </Link>
@@ -151,7 +163,7 @@ export default function Home() {
                   Motivasi adalah dorongan dalam diri siswa yang membuatnya mau belajar dan bertahan meskipun mengalami kesulitan.
                 </p>
                 <Link href="/PembelajaranDetail2">
-                  <span className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
+                  <span className="cursor-pointer bg-linear-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
                     Pelajari Lebih Lanjut
                   </span>
                 </Link>
@@ -170,13 +182,12 @@ export default function Home() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-2xl font-bold mb-3 text-gray-900"> Perilaku (Tindakan Nyata dalam Belajar)
-</h3>
+                <h3 className="text-2xl font-bold mb-3 text-gray-900">Perilaku (Tindakan Nyata dalam Belajar)</h3>
                 <p className="text-lg leading-relaxed text-gray-700 text-center mb-6">
                   Aspek perilaku adalah bagaimana siswa mengatur tindakan nyata selama proses belajar.
                 </p>
                 <Link href="/PembelajaranDetail3">
-                  <span className="cursor-pointer bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
+                  <span className="cursor-pointer bg-linear-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all inline-block">
                     Pelajari Lebih Lanjut
                   </span>
                 </Link>
