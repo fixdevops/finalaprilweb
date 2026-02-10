@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Home() {
   const materi = [
@@ -8,7 +7,7 @@ export default function Home() {
       title: "Metakognisi",
       subtitle: "Mengatur Pikiran Saat Belajar",
       desc: "Kesadaran dan kemampuan untuk mengatur cara berpikir sendiri secara strategis.",
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400&h=250",
+      image: "https://i.pinimg.com/1200x/45/a7/9d/45a79d80df3d3ba026889ea8cccaf29e.jpg",
       link: "/PembelajaranDetail1",
       color: "border-rose-200 bg-rose-50 text-rose-700",
       btnColor: "bg-rose-600 hover:bg-rose-700"
@@ -66,11 +65,12 @@ export default function Home() {
               >
                 <div className="p-2">
                   <div className="relative h-52 w-full rounded-2xl overflow-hidden shadow-inner">
-                    <Image
+                    {/* GANTI IMAGE NEXT.JS KE IMG STANDAR */}
+                    <img
                       src={item.image}
                       alt={item.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
                     />
                   </div>
                 </div>
@@ -83,7 +83,7 @@ export default function Home() {
                   </p>
                   
                   <Link href={item.link}>
-                    <span className={`inline-block w-full py-4 rounded-xl text-white font-bold transition-colors shadow-md ${item.btnColor}`}>
+                    <span className={`inline-block w-full py-4 rounded-xl text-white font-bold transition-colors shadow-md cursor-pointer ${item.btnColor}`}>
                       Pelajari Lebih Lanjut
                     </span>
                   </Link>

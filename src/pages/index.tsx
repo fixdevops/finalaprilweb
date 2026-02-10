@@ -15,7 +15,7 @@ export default function Home() {
       <section className="relative pt-32 pb-24 px-6 border-b border-amber-900/20 bg-gradient-to-b from-[#1e293b] to-[#0f172a]">
         <div className="max-w-4xl mx-auto">
           <p className="text-amber-500 font-semibold tracking-[0.2em] text-[11px] uppercase mb-6">
-            Scientific Approach to Self-Control
+            Scientific Approach to Theselflearinghub
           </p>
           <h1 className="text-4xl md:text-6xl font-bold text-stone-50 tracking-tight leading-tight mb-8">
             Membangun disiplin diri melalui <br className="hidden md:block" /> 
@@ -51,9 +51,9 @@ export default function Home() {
           </div>
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
             <div className="text-4xl mb-4">🚫</div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Lingkungan Terkendali</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-800">Kendali Visual</h3>
             <p className="text-gray-600 leading-relaxed">
-              Jauhkan perangkat game dari tempat tidur agar tidak tergoda secara konstan.
+              Simpan benda-benda yang memicu keinginan untuk bersantai secara berlebihan.
             </p>
           </div>
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
@@ -125,15 +125,15 @@ export default function Home() {
             {/* Card 1 */}
             <div className="p-10 rounded-3xl border-2 shadow-sm border-red-200 bg-red-50 text-red-700">
               <div className="flex flex-col items-center">
-                <div className="mb-6 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
-                  <Image
-                    src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400&h=250"
-                    alt="Manajemen Waktu Strategis"
-                    width={400}
-                    height={250}
-                    className="object-cover"
-                  />
-                </div>
+                <div className="group relative mb-6 overflow-hidden rounded-2xl border-4 border-white shadow-lg w-full max-w-[400px]">
+        {/* Menggunakan tag img standar agar tidak perlu setting next.config.js */}
+        <img
+          src="https://i.pinimg.com/1200x/45/a7/9d/45a79d80df3d3ba026889ea8cccaf29e.jpg"
+          alt="Manajemen Waktu Strategis"
+          className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy" 
+        />
+      </div>
                 <h3 className="text-2xl font-bold mb-3 text-gray-900">Metakognisi (Mengatur Pikiran Saat Belajar)</h3>
                 <p className="text-lg leading-relaxed text-gray-700 text-center mb-6">
                   Metakognisi adalah kesadaran dan kemampuan siswa untuk mengatur cara berpikirnya sendiri saat belajar.
