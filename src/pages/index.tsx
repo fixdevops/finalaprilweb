@@ -39,32 +39,7 @@ export default function Home() {
       
     </div>
 
-      {/* 3 Cards Section */}
-      <section className="py-16 px-4 max-w-7xl mx-auto justify-center">
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-            <div className="text-4xl mb-4">📅</div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Jadwal Terstruktur</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Gunakan aturan &apos;Kerja Dulu, Main Kemudian&apos;. Jadikan bermain game sebagai reward tugas.
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-            <div className="text-4xl mb-4">🚫</div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Kendali Visual</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Simpan benda-benda yang memicu keinginan untuk bersantai secara berlebihan.
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-            <div className="text-4xl mb-4">📝</div>
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Kontrak Belajar</h3>
-            <p className="text-gray-600 leading-relaxed">
-              Buat komitmen harian dengan diri sendiri. Rencanakan, jalankan, dan evaluasi.
-            </p>
-          </div>
-        </div>
-      </section>
+
 
       {/* Kontrak Belajar CTA */}
       <section className="py-20 bg-amber-50 text-white relative overflow-hidden">

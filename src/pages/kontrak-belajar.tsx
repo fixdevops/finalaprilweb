@@ -1,171 +1,501 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
-const questions = [
-  { id: 1, q: "Saya lebih mudah mengingat sesuatu jika…", options: [{ t: "A", text: "Ada gambar atau diagram", v: "visual" }, { t: "B", text: "Dijelaskan dengan suara", v: "auditori" }, { t: "C", text: "Dicoba langsung", v: "kinestetik" }] },
-  { id: 2, q: "Saat belajar, saya suka…", options: [{ t: "A", text: "Membaca catatan atau buku", v: "visual" }, { t: "B", text: "Mendengar penjelasan orang", v: "auditori" }, { t: "C", text: "Praktek langsung", v: "kinestetik" }] },
-  { id: 3, q: "Saya cepat paham jika…", options: [{ t: "A", text: "Ada ilustrasi atau contoh visual", v: "visual" }, { t: "B", text: "Dijelaskan panjang lebar", v: "auditori" }, { t: "C", text: "Dicoba sendiri", v: "kinestetik" }] },
-  // Tambahkan soal lainnya di sini
+// Emojis for better visuals
+const MOODS = [
+  { label: 'Sangat Senang', emoji: '🤩', color: 'bg-yellow-400' },
+  { label: 'Senang', emoji: '😊', color: 'bg-green-400' },
+  { label: 'Biasa Saja', emoji: '😐', color: 'bg-blue-400' },
+  { label: 'Sedih', emoji: '😔', color: 'bg-purple-400' },
+  { label: 'Marah/Kesal', emoji: '😡', color: 'bg-red-400' },
 ];
 
-export default function QuizLearningStyle() {
-  const resultRef = useRef<HTMLDivElement>(null);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [showResult, setShowResult] = useState(false);
+const ENERGIES = [
+  { label: 'Full Power', emoji: '⚡', color: 'bg-yellow-500' },
+  { label: 'Cukup', emoji: '🔋', color: 'bg-green-500' },
+  { label: 'Mulai Lelah', emoji: '🪫', color: 'bg-orange-500' },
+  { label: 'Butuh Tidur', emoji: '😴', color: 'bg-red-500' },
+];
+
+export default function KontrakBelajar() {
+  const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Mencegah error Hydration Next.js
+  // Form Data
+  const [formData, setFormData] = useState({
+    nama: '',
+    kelas: '',
+    target: '',
+    jauhkanHP: false,
+    pomodoro: false,
+    mood: '',
+    energi: '',
+    hasil: '',
+    hadiah: '',
+  });
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleSelect = (qId: number, value: string) => {
-    setAnswers((prev) => ({ ...prev, [qId]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target as HTMLInputElement;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const calculateResult = () => {
-    const counts = { visual: 0, auditori: 0, kinestetik: 0 };
-    Object.values(answers).forEach((v) => {
-      if (v === 'visual') counts.visual++;
-      if (v === 'auditori') counts.auditori++;
-      if (v === 'kinestetik') counts.kinestetik++;
-    });
-    return [
-      { name: 'Visual', value: counts.visual, color: '#3b82f6' },
-      { name: 'Auditori', value: counts.auditori, color: '#10b981' },
-      { name: 'Kinestetik', value: counts.kinestetik, color: '#f59e0b' },
-    ];
-  };
+  const selectMood = (mood: string) => setFormData((prev) => ({ ...prev, mood }));
+  const selectEnergy = (energy: string) => setFormData((prev) => ({ ...prev, energi: energy }));
 
-  const dataResult = calculateResult();
-  const dominant = dataResult.reduce((prev, current) => (prev.value > current.value ? prev : current));
+  const nextStep = () => setStep((prev) => prev + 1);
+  const prevStep = () => setStep((prev) => prev - 1);
 
-  const handleDownload = async () => {
-    if (!resultRef.current) return;
+  const handleDownloadPDF = async () => {
     setIsGenerating(true);
     try {
-      const html2canvas = (await import('html2canvas')).default;
       const { jsPDF } = await import('jspdf');
+      const doc = new jsPDF();
 
-      const canvas = await html2canvas(resultRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false
+      // Konfigurasi Warna
+      const COLORS = {
+        primary: [245, 158, 11] as [number, number, number], // amber-500
+        textDark: [15, 23, 42] as [number, number, number], // slate-900
+        textLight: [100, 116, 139] as [number, number, number], // slate-500
+        white: [255, 255, 255] as [number, number, number],
+        bgRow: [248, 250, 252] as [number, number, number], // slate-50
+      };
+
+      // Header Laporan
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.setTextColor(...COLORS.textDark);
+      doc.text('KONTRAK BELAJAR HARIAN', 105, 25, { align: 'center' });
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(...COLORS.textLight);
+      doc.text(`Digital Accountability System • ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`, 105, 32, { align: 'center' });
+
+      // Garis Pemisah
+      doc.setDrawColor(226, 232, 240);
+      doc.line(14, 40, 196, 40);
+
+      // Rendering Tabel Manual
+      let startY = 50;
+      const margin = 14;
+      const tableWidth = 182;
+      const col1Width = 50;
+      const col2Width = tableWidth - col1Width;
+      const rowHeight = 12;
+
+      const items = [
+        { label: 'Nama Lengkap', value: formData.nama },
+        { label: 'Kelas', value: formData.kelas },
+        { label: 'Rencana Aksi', value: formData.target },
+        { label: 'Fokus: HP', value: formData.jauhkanHP ? 'SUDAH DIJAUHKAN' : 'Belum' },
+        { label: 'Fokus: Pomodoro', value: formData.pomodoro ? 'DILAKUKAN' : 'Tidak' },
+        { label: 'Kondisi Mood', value: formData.mood },
+        { label: 'Kondisi Energi', value: formData.energi },
+        { label: 'Hasil Evaluasi', value: formData.hasil },
+        { label: 'Self Reward', value: formData.hadiah },
+      ];
+
+      // Header Tabel
+      doc.setFillColor(...COLORS.primary);
+      doc.rect(margin, startY, tableWidth, rowHeight, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(...COLORS.white);
+      doc.text('ASPEK KONTRAK', margin + 5, startY + 8);
+      doc.text('DETAIL & REKAPAN', margin + col1Width + 5, startY + 8);
+
+      let currentY = startY + rowHeight;
+
+      items.forEach((item, index) => {
+        // Striped background
+        if (index % 2 === 1) {
+          doc.setFillColor(...COLORS.bgRow);
+          doc.rect(margin, currentY, tableWidth, rowHeight, 'F');
+        }
+
+        // Border baris
+        doc.setDrawColor(203, 213, 225);
+        doc.rect(margin, currentY, tableWidth, rowHeight, 'S');
+        doc.line(margin + col1Width, currentY, margin + col1Width, currentY + rowHeight);
+
+        // Teks Label
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(...COLORS.textDark);
+        doc.text(item.label, margin + 5, currentY + 8);
+
+        // Teks Value (Wrap if needed)
+        doc.setFont('helvetica', 'normal');
+        const splitText = doc.splitTextToSize(item.value || '-', col2Width - 10);
+        doc.text(splitText, margin + col1Width + 5, currentY + 8);
+
+        currentY += rowHeight;
       });
 
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      // Footer Komitmen
+      currentY += 15;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(...COLORS.textDark);
+      doc.text('KOMITMEN SAYA:', margin, currentY);
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Hasil-Gaya-Belajar.pdf`);
+      currentY += 8;
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(11);
+      doc.setTextColor(71, 85, 105);
+      const komitmen = '"Saya bertanggung jawab atas pertumbuhan saya sendiri. Setiap kemenangan kecil adalah langkah menuju perubahan besar."';
+      const splitKomitmen = doc.splitTextToSize(komitmen, tableWidth);
+      doc.text(splitKomitmen, margin, currentY);
+
+      // Watermark / Branding
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...COLORS.textLight);
+      doc.text('Dicetak otomatis oleh Theselflearninghub App', 105, 285, { align: 'center' });
+
+      doc.save(`Kontrak-Belajar-${formData.nama || 'User'}.pdf`);
     } catch (error) {
       console.error(error);
-      alert("Gagal mengunduh PDF. Pastikan library terinstall.");
+      alert('Terjadi kesalahan saat membuat PDF.');
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // Jika belum mounted, jangan render chart dulu untuk hindari error
-  if (!mounted) return <div className="p-8 text-center">Memuat...</div>;
+  if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans selection:bg-amber-500/30">
       <Head>
-        <title>Tes Gaya Belajar</title>
+        <title>Kontrak Belajar | Theselflearninghub</title>
       </Head>
 
-      <div className="max-w-3xl mx-auto">
-        {!showResult ? (
-          <div className="bg-white p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100">
-            <h1 className="text-2xl md:text-3xl font-black text-center text-blue-900 mb-8">🎯 Cek Gaya Belajarmu</h1>
-            
-            {questions.map((item) => (
-              <div key={item.id} className="mb-8 border-b border-gray-50 pb-6">
-                <p className="font-bold text-black mb-4">{item.id}. {item.q}</p>
-                <div className="grid gap-3">
-                  {item.options.map((opt) => (
-                    <label key={opt.t} className="flex items-center space-x-3 p-4 rounded-xl border-2 border-gray-100 hover:border-blue-400 cursor-pointer transition-all bg-white">
-                      <input 
-                        type="radio" 
-                        name={`q-${item.id}`} 
-                        checked={answers[item.id] === opt.v}
-                        onChange={() => handleSelect(item.id, opt.v)}
-                        className="w-5 h-5 text-blue-600"
-                      />
-                      <span className="font-medium text-black">{opt.text}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
+      {/* Navigation */}
+      <nav className="p-6">
+        <Link href="/">
+          <button className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <span className="text-xl">←</span> Kembali ke Beranda
+          </button>
+        </Link>
+      </nav>
 
-            <button 
-              onClick={() => setShowResult(true)}
-              disabled={Object.keys(answers).length < questions.length}
-              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              LIHAT HASIL & DOWNLOAD
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {/* Area PDF */}
-            <div ref={resultRef} className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-200 text-black">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-black text-blue-900">LAPORAN GAYA BELAJAR</h2>
-                <div className="h-1 w-20 bg-blue-500 mx-auto mt-2"></div>
-              </div>
+      <div className="max-w-xl mx-auto px-6 py-12">
+        <header className="mb-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold tracking-widest uppercase mb-4"
+          >
+            Digital Accountability
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight"
+          >
+            Kontrak <span className="text-amber-500">Belajar</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-slate-400 text-lg"
+          >
+            Tulis rencanamu, jaga fokusmu, dan raih kemenangan kecil setiap hari.
+          </motion.p>
+        </header>
 
-              <div className="h-64 w-full mb-8" style={{ minHeight: '250px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={dataResult} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                      {dataResult.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+        {/* Progress Bar */}
+        <div className="flex gap-2 mb-12">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className={`h-2 flex-1 rounded-full transition-all duration-500 ${
+                step >= i ? 'bg-amber-500' : 'bg-slate-800'
+              }`}
+            />
+          ))}
+        </div>
 
-              <div className="bg-blue-50 p-6 rounded-2xl border-2 border-blue-100 mb-6 text-center text-black">
-                <p className="text-lg font-bold">Gaya Belajar Dominan Anda:</p>
-                <h3 className="text-4xl font-black text-blue-600 uppercase mt-2">{dominant.name}</h3>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                 <h4 className="font-black text-lg border-b pb-2">Rincian Skor:</h4>
-                 {dataResult.map(res => (
-                   <div key={res.name} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border">
-                     <span className="font-bold">{res.name}</span>
-                     <span className="text-blue-600 font-black">{res.value} Poin</span>
-                   </div>
-                 ))}
-              </div>
-              
-              <p className="mt-8 text-[10px] text-center text-gray-400">Dicetak otomatis oleh Theselflearninghub pada {new Date().toLocaleDateString()}</p>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <button 
-                onClick={handleDownload}
-                disabled={isGenerating}
-                className="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-transform"
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
               >
-                {isGenerating ? 'MENYIAPKAN PDF...' : '📥 UNDUH HASIL PDF'}
-              </button>
-              <button onClick={() => setShowResult(false)} className="text-blue-600 font-bold underline text-center">Ulangi Tes</button>
-            </div>
-          </div>
-        )}
+                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl">
+                  <h2 className="text-xl font-bold text-white mb-6">Siapa namamu?</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-400 mb-2">Nama Lengkap</label>
+                      <input
+                        type="text"
+                        name="nama"
+                        value={formData.nama}
+                        onChange={handleChange}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-medium"
+                        placeholder="Ketik namamu di sini..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-400 mb-2">Kelas</label>
+                      <input
+                        type="text"
+                        name="kelas"
+                        value={formData.kelas}
+                        onChange={handleChange}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-medium"
+                        placeholder="Contoh: 12 IPA 1"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={nextStep}
+                  disabled={!formData.nama || !formData.kelas}
+                  className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:hover:bg-amber-500 text-slate-950 font-black py-5 rounded-2xl transition-all shadow-lg shadow-amber-500/20 active:scale-95"
+                >
+                  LANJUT KE RENCANA →
+                </button>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl">
+                  <h2 className="text-xl font-bold text-white mb-6">Apa targetmu hari ini?</h2>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-2">Rencana Aksi</label>
+                    <textarea
+                      name="target"
+                      value={formData.target}
+                      onChange={handleChange}
+                      rows={5}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-medium resize-none"
+                      placeholder="Apa yang ingin kamu selesaikan hari ini?"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={prevStep}
+                    className="flex-1 bg-slate-800 text-white font-bold py-5 rounded-2xl hover:bg-slate-700 transition-all"
+                  >
+                    KEMBALI
+                  </button>
+                  <button
+                    onClick={nextStep}
+                    disabled={!formData.target}
+                    className="flex-[2] bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black py-5 rounded-2xl transition-all"
+                  >
+                    SIAP JALANKAN →
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl space-y-8">
+                  <div>
+                    <h2 className="text-xl font-bold text-white mb-4 italic">Fokus Phase</h2>
+                    <div className="space-y-4">
+                      <label className="flex items-center gap-4 p-5 bg-slate-900 rounded-2xl border border-slate-700 cursor-pointer group transition-all hover:border-amber-500/50">
+                        <input
+                          type="checkbox"
+                          name="jauhkanHP"
+                          checked={formData.jauhkanHP}
+                          onChange={handleChange}
+                          className="w-6 h-6 rounded accent-amber-500"
+                        />
+                        <div className="flex-1">
+                          <p className="font-bold text-white group-hover:text-amber-500 transition-colors">Jauhkan Smartphone</p>
+                          <p className="text-xs text-slate-500">Letakkan di ruangan lain untuk fokus maksimal.</p>
+                        </div>
+                        <span className="text-2xl">📱</span>
+                      </label>
+
+                      <label className="flex items-center gap-4 p-5 bg-slate-900 rounded-2xl border border-slate-700 cursor-pointer group transition-all hover:border-amber-500/50">
+                        <input
+                          type="checkbox"
+                          name="pomodoro"
+                          checked={formData.pomodoro}
+                          onChange={handleChange}
+                          className="w-6 h-6 rounded accent-amber-500"
+                        />
+                        <div className="flex-1">
+                          <p className="font-bold text-white group-hover:text-amber-500 transition-colors">Teknik Pomodoro</p>
+                          <p className="text-xs text-slate-500">25 Menit Belajar / 5 Menit Istirahat.</p>
+                        </div>
+                        <span className="text-2xl">⏳</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 className="text-xl font-bold text-white mb-4 italic">Inner Check</h2>
+                    <div className="space-y-6">
+                      <div>
+                        <p className="text-sm font-medium text-slate-400 mb-3 text-center">Bagaimana Mood Kamu?</p>
+                        <div className="flex justify-between gap-2">
+                          {MOODS.map((m) => (
+                            <button
+                              key={m.label}
+                              onClick={() => selectMood(m.label)}
+                              className={`flex flex-col items-center flex-1 p-2 rounded-xl transition-all ${
+                                formData.mood === m.label
+                                  ? `${m.color} text-slate-950 scale-110 shadow-lg`
+                                  : 'bg-slate-900 text-slate-500 hover:bg-slate-800'
+                              }`}
+                            >
+                              <span className="text-xl mb-1">{m.emoji}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-medium text-slate-400 mb-3 text-center">Level Energi?</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          {ENERGIES.map((e) => (
+                            <button
+                              key={e.label}
+                              onClick={() => selectEnergy(e.label)}
+                              className={`flex items-center gap-3 p-4 rounded-xl transition-all border ${
+                                formData.energi === e.label
+                                  ? `${e.color} border-white text-white`
+                                  : 'bg-slate-900 border-slate-700 text-slate-500 hover:border-slate-500'
+                              }`}
+                            >
+                              <span className="text-xl">{e.emoji}</span>
+                              <span className="text-xs font-bold uppercase tracking-tighter">{e.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={prevStep}
+                    className="flex-1 bg-slate-800 text-white font-bold py-5 rounded-2xl hover:bg-slate-700"
+                  >
+                    KEMBALI
+                  </button>
+                  <button
+                    onClick={nextStep}
+                    disabled={!formData.mood || !formData.energi}
+                    className="flex-[2] bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black py-5 rounded-2xl"
+                  >
+                    EVALUASI AKHIR →
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 4 && (
+              <motion.div
+                key="step4"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl space-y-6">
+                  <h2 className="text-xl font-bold text-white mb-2 italic">Evaluation Phase</h2>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-2">Hasil yang Dicapai</label>
+                    <textarea
+                      name="hasil"
+                      value={formData.hasil}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-medium resize-none"
+                      placeholder="Apa saja yang berhasil kamu kerjakan?"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-2">Self Reward (Hadiahmu)</label>
+                    <input
+                      type="text"
+                      name="hadiah"
+                      value={formData.hadiah}
+                      onChange={handleChange}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-medium"
+                      placeholder="Sebutkan hadiah kecil untuk dirimu..."
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    onClick={prevStep}
+                    className="flex-1 bg-slate-800 text-white font-bold py-5 rounded-2xl hover:bg-slate-700"
+                  >
+                    KEMBALI
+                  </button>
+                  <button
+                    onClick={handleDownloadPDF}
+                    disabled={isGenerating || !formData.hasil || !formData.hadiah}
+                    className="flex-[2] bg-green-500 hover:bg-green-400 disabled:opacity-50 text-slate-950 font-black py-5 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center gap-3"
+                  >
+                    {isGenerating ? (
+                      'MENYIAPKAN PDF...'
+                    ) : (
+                      <>
+                        <span>📥 DOWNLOAD HASIL PDF</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <button
+                  onClick={() => setStep(1)}
+                  className="w-full text-slate-500 hover:text-white text-sm font-bold transition-colors mt-4"
+                >
+                  ULANGI DARI AWAL
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <footer className="mt-20 text-center">
+          <p className="text-slate-500 text-xs tracking-widest uppercase">
+            © 2026 Theselflearninghub • Discipline is Freedom
+          </p>
+        </footer>
       </div>
     </div>
   );
